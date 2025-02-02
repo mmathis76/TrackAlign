@@ -1,7 +1,9 @@
 Prerequisites:
 
 Python 3 (incl. pip)
+
 Install the Python 3 distribution depending on your OS (Linux might already come with it, Anaconda or ActiveState Python on Windows, ...)
+
 Then install or upgrade pip:
 `python -m ensurepip --upgrade`
 
