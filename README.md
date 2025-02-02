@@ -1,16 +1,16 @@
-Prerequisites:
+# Prerequisites:
 
-Python 3 (incl. pip)
+## Python 3 (incl. pip)
 
 Install the Python 3 distribution depending on your OS (Linux might already come with it, Anaconda or ActiveState Python on Windows, ...)
 
-Then install or upgrade pip:
+## Install or upgrade pip:
 `python -m ensurepip --upgrade`
 
-Install virtualenv through pip
+## Install virtualenv through pip
 `pip install virtualenv`
 
-Set up your virtualenv specifically to use Python 3.11 (latest supported Python version at the time of the latest revision of audalign)
+## Set up your virtualenv specifically to use Python 3.11 (latest supported Python version at the time of the latest revision of audalign)
 
 ```
 pyenv install 3.11
@@ -20,40 +20,40 @@ pyenv install 3.11
 ~/.pyenv/versions/3.11.10/bin/pip3 install pydub
 ```
 
-Parameters:
+#Parameters:
 
 The script accepts four required command-line parameters:
 
-- Input Directory (-i, --input)
+## Input Directory (-i, --input)
 * Path to the directory containing WAV files to be processed
 * Contains both the reference file and files to be aligned
 * Only processes WAV files in the root directory (subdirectories are ignored)
 
-- Reference File (-r, --reference)
+## Reference File (-r, --reference)
 * Basename (filename) of the reference WAV file
 * This file serves as the timing reference for aligning other files
 * Must be located in the input directory
 * Can be either mono or stereo
 
-- Temporary Directory (-t, --temp)
+## Temporary Directory (-t, --temp)
 * Path where intermediate mono files are stored
 * Used for storing split channels from stereo files
 * Stores both reference and input file channels during processing
 * Files in this directory are reused if they already exist
 
-- Destination Directory (-o, --destination)
+## Destination Directory (-o, --destination)
 * Path where the final aligned files are saved
 * Contains the alignment log file
 * Stores the final merged stereo files after alignment
 * Intermediate aligned mono files are created here before merging
 
-- Optional Channel Mode (-c, --channel)
+## Optional Channel Mode (-c, --channel)
 * Specifies which channel to use for alignment: 'L' (left), 'R' (right), or 'auto'
 * In 'auto' mode, left channels are aligned with left, right with right
 * When using 'L' or 'R', all channels are aligned against the specified reference channel
 * Particularly useful when one channel of the reference might be silent or corrupted
 
-Usage example:
+# Usage example:
 
 ```
 ~/.pyenv/versions/3.11.10/bin/python ./trackalign.py  -i bak/  -t temp/ -o destination -r 
