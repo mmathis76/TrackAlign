@@ -20,7 +20,7 @@ pyenv install 3.11
 ~/.pyenv/versions/3.11.10/bin/pip3 install pydub
 ```
 
-#Parameters:
+# Parameters:
 
 The script accepts four required command-line parameters:
 
