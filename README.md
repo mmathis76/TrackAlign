@@ -99,85 +99,58 @@ On the other hand, the compilation of the code and all of its dependencies will 
 Rule of thumb: This will double the requirements in term of RAM. 
 16 GiB of RAM are recommended with the stand-alone *.exe version. 
 
+Please note that the correlation algorithms are supposedly the most accurate ones. They're also consuming less memory than "fingerprinting".
+
+In practise, depending on the specific source files, one algorithm might be more accurate than the others.
+
 # Program parameters:
 
-The script accepts four required command-line parameters:
+## Required Parameters
 
-## Input Directory (-i, --input)
+### Input Directory (-i, --input)
 * Path to the directory containing WAV files to be processed
 * Contains both the reference file and files to be aligned
 * Only processes WAV files in the root directory (subdirectories are ignored)
 
-## Reference File (-r, --reference)
+### Reference File (-r, --reference)
 * Basename (filename) of the reference WAV file
 * This file serves as the timing reference for aligning other files
 * Must be located in the input directory
 * Can be either mono or stereo
 
-## Temporary Directory (-t, --temp)
+### Temporary Directory (-t, --temp)
 * Path where intermediate mono files are stored
 * Used for storing split channels from stereo files
 * Stores both reference and input file channels during processing
 * Files in this directory are reused if they already exist
 
-## Destination Directory (-o, --destination)
+### Destination Directory (-o, --destination)
 * Path where the final aligned files are saved
 * Contains the alignment log file
 * Stores the final merged stereo files after alignment
 * Intermediate aligned mono files are created here before merging
 
-## Optional Channel Mode (-c, --channel)
+## Optional Parameters
+
+### Channel Mode (-c, --channel)
 * Specifies which channel to use for alignment: 'L' (left), 'R' (right), or 'auto'
 * In 'auto' mode, left channels are aligned with left, right with right
 * When using 'L' or 'R', all channels are aligned against the specified reference channel
 * Particularly useful when one channel of the reference might be silent or corrupted
 
+### Algorithm (-a, --algorithm)
+* Specifies the alignment algorithm to use
+* Available options: 'fingerprint', 'correlation', 'correlation_spectrogram', 'visual'
+* Default: 'fingerprint'
+
+### Accuracy (-acc, --accuracy)
+* Sets the accuracy level for the fingerprint algorithm
+* Integer value that affects the precision of audio fingerprinting
+* Default value: 3
+* Higher values increase accuracy but require more processing time
+
 # Usage example:
 
 ```
-~/.pyenv/versions/3.11.10/bin/python ./trackalign.py  -i bak/  -t temp/ -o destination -r 
-
-20160117_CHVE_44.1Khz-16bit.wav -c auto
-2025-02-01 14:17:24,761 - INFO - Logging system initialized. Full log at destination/alignment.log
-2025-02-01 14:17:52,828 - INFO - Split stereo file 'bak/AUD.wav' into:
-2025-02-01 14:17:52,828 - INFO -   - Left channel: 'temp/AUD_L.wav'
-2025-02-01 14:17:52,828 - INFO -   - Right channel: 'temp/AUD_R.wav'
-2025-02-01 14:17:54,119 - INFO - Using stereo reference channels independently
-2025-02-01 14:17:54,484 - INFO - Fingerprinting 20160117_CHVE_44.1Khz-16bit_L.wav
-2025-02-01 14:17:55,574 - INFO - Fingerprinting AUD_L.wav
-2025-02-01 14:18:56,511 - INFO - Finished fingerprinting AUD_L.wav
-2025-02-01 14:19:01,108 - INFO - Finished fingerprinting 20160117_CHVE_44.1Khz-16bit_L.wav
-2025-02-01 14:19:01,635 - INFO - 20160117_CHVE_44.1Khz-16bit_L.wav: Finding Matches...
-2025-02-01 14:19:01,844 - INFO - Aligning matches
-2025-02-01 14:19:01,929 - INFO - AUD_L.wav: Finding Matches...
-2025-02-01 14:19:02,041 - INFO - Aligning matches
-2025-02-01 14:19:03,873 - INFO - Writing destination/20160117_CHVE_44.1Khz-16bit_L._L_aligned.wav
-2025-02-01 14:19:03,954 - INFO - Writing destination/AUD_L._L_aligned.wav
-2025-02-01 14:19:04,802 - INFO - Writing destination/total._L_aligned.wav
-2025-02-01 14:19:04,891 - INFO - 2 out of 2 found and aligned
-2025-02-01 14:19:04,891 - INFO - Total fingerprints: 949603
-2025-02-01 14:19:05,282 - INFO - Fingerprinting 20160117_CHVE_44.1Khz-16bit_R.wav
-2025-02-01 14:19:06,359 - INFO - Fingerprinting AUD_R.wav
-2025-02-01 14:20:07,225 - INFO - Finished fingerprinting AUD_R.wav
-2025-02-01 14:20:12,142 - INFO - Finished fingerprinting 20160117_CHVE_44.1Khz-16bit_R.wav
-2025-02-01 14:20:12,699 - INFO - 20160117_CHVE_44.1Khz-16bit_R.wav: Finding Matches...
-2025-02-01 14:20:12,820 - INFO - Aligning matches
-2025-02-01 14:20:12,896 - INFO - AUD_R.wav: Finding Matches...
-2025-02-01 14:20:13,145 - INFO - Aligning matches
-2025-02-01 14:20:14,859 - INFO - Writing destination/20160117_CHVE_44.1Khz-16bit_R._R_aligned.wav
-2025-02-01 14:20:14,943 - INFO - Writing destination/AUD_R._R_aligned.wav
-2025-02-01 14:20:15,797 - INFO - Writing destination/total._R_aligned.wav
-2025-02-01 14:20:15,881 - INFO - 2 out of 2 found and aligned
-2025-02-01 14:20:15,881 - INFO - Total fingerprints: 1898676
-2025-02-01 14:20:15,983 - INFO - Renamed 'AUD_R._R_aligned.wav' to 'AUD_R_aligned.wav'.
-2025-02-01 14:20:15,983 - INFO - Renamed '20160117_CHVE_44.1Khz-16bit_L._L_aligned.wav' to '20160117_CHVE_44.1Khz-16bit_L_aligned.wav'.
-2025-02-01 14:20:15,983 - INFO - Renamed '20160117_CHVE_44.1Khz-16bit_R._R_aligned.wav' to '20160117_CHVE_44.1Khz-16bit_R_aligned.wav'.
-2025-02-01 14:20:15,983 - INFO - Renamed 'AUD_L._L_aligned.wav' to 'AUD_L_aligned.wav'.
-2025-02-01 14:20:16,859 - INFO - Merged 'destination/20160117_CHVE_44.1Khz-16bit_L_aligned.wav' and 'destination/20160117_CHVE_44.1Khz-16bit_R_aligned.wav' into stereo file 'destination/20160117_aligned_stereo.wav'.
-2025-02-01 14:20:16,906 - INFO - Deleted intermediate mono files
-2025-02-01 14:20:17,889 - INFO - Merged 'destination/AUD_L_aligned.wav' and 'destination/AUD_R_aligned.wav' into stereo file 'destination/AUD_aligned_stereo.wav'.
-2025-02-01 14:20:17,932 - INFO - Deleted intermediate mono files
-2025-02-01 14:20:18,804 - INFO - Merged 'destination/total._L_aligned.wav' and 'destination/total._R_aligned.wav' into stereo file 'destination/total._aligned_stereo.wav'.
-2025-02-01 14:20:18,853 - INFO - Deleted intermediate mono files
-2025-02-01 14:20:18,855 - INFO - Processing completed successfully
+~/.pyenv/versions/3.11.10/bin/python ./trackalign.py -i bak/ -t temp/ -o destination -r reference.wav -c auto -a fingerprint -acc 5
 ```
